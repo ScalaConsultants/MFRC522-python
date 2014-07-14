@@ -111,7 +111,7 @@ class MFRC522:
     def __init__(self, dev='/dev/spidev0.0', spd=1000000):
         spi.openSPI(device=dev, speed=spd)
         GPIO.setmode(GPIO.BOARD)
-        GPIO.setup(22, GPIO.OUT)
+        GPIO.setup(self.NRSTPD, GPIO.OUT)
         GPIO.output(self.NRSTPD, 1)
         self.MFRC522_Init()
 
@@ -380,8 +380,6 @@ class MFRC522:
             i = i + 1
 
     def MFRC522_Init(self):
-        GPIO.output(self.NRSTPD, 1)
-
         self.MFRC522_Reset()
 
         self.Write_MFRC522(self.TModeReg, 0x8D)
