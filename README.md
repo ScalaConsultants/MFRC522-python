@@ -15,7 +15,7 @@ This code requires you to have SPI-Py installed:
 
 ## Installation
 
-    $ pip install git+https://github.com/wybczu/MFRC522-python.git@cleanup
+    $ pip install git+https://github.com/wybczu/MFRC522-python
 
 ## Examples
 
