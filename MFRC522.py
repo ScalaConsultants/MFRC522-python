@@ -23,6 +23,7 @@ class MFRC522:
     PICC_REQIDL       = 0x26
     PICC_REQALL       = 0x52
     PICC_ANTICOLL     = 0x93
+    PICC_ANTICOLL_2   = 0x95
     PICC_SElECTTAG    = 0x93
     PICC_AUTHENT1A    = 0x60
     PICC_AUTHENT1B    = 0x61
@@ -227,7 +228,6 @@ class MFRC522:
         return (status, backBits)
 
     def MFRC522_Anticoll(self):
-        backData = []
         serNumCheck = 0
 
         serNum = []
@@ -235,6 +235,31 @@ class MFRC522:
         self.Write_MFRC522(self.BitFramingReg, 0x00)
 
         serNum.append(self.PICC_ANTICOLL)
+        serNum.append(0x20)
+
+        (status, backData, backBits) = self.MFRC522_ToCard(self.PCD_TRANSCEIVE, serNum)
+
+        if(status == self.MI_OK):
+            i = 0
+            if len(backData) == 5:
+                while i < 4:
+                    serNumCheck = serNumCheck ^ backData[i]
+                    i = i + 1
+                if serNumCheck != backData[i]:
+                    status = self.MI_ERR
+            else:
+                status = self.MI_ERR
+
+        return (status, backData)
+
+    def MFRC522_Anticoll2(self):
+        serNumCheck = 0
+
+        serNum = []
+
+        self.Write_MFRC522(self.BitFramingReg, 0x00)
+
+        serNum.append(self.PICC_ANTICOLL_2)
         serNum.append(0x20)
 
         (status, backData, backBits) = self.MFRC522_ToCard(self.PCD_TRANSCEIVE, serNum)
@@ -286,7 +311,6 @@ class MFRC522:
         (status, backData, backLen) = self.MFRC522_ToCard(self.PCD_TRANSCEIVE, buf)
 
         if (status == self.MI_OK) and (backLen == 0x18):
-            print "Size: " + str(backData[0])
             return backData[0]
         else:
             return 0
